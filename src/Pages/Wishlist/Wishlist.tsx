@@ -16,7 +16,7 @@ function Wishlist() {
                     </Link>
                 </div>
 
-                <div>
+                <div className="flex flex-col space-y-1">
                     { [1, 2, 3].map((n) => <WishlistItem key={n} n={n}  />) }
                 </div>
 
