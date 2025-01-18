@@ -9,33 +9,27 @@ import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 
 import StorageHandler, { Item } from '../../data/StorageHandler';
+import LinkMenu from './LinkMenu';
 
-const EMPTY_ITEM : Item = {
-    id: "",
-    text: "",
-    imageSource: "",
-    hasImage: false,
-    linkText: "",
-    hasLink: false,
-    show: true,
-    isClaimed: false,
-    claimedBy: ""
-}
-
-function WishlistItem(props: { data: Item }) {
+function WishlistItem(props: { data: Item, setWishlistItems: Function }) {
 
     let { data } = props
     let db = new StorageHandler()
 
-    // const [item, setItem] = useState(EMPTY_ITEM)
+    const [menuTarget, setMenuTarget] = useState<EventTarget|null>(null)
 
-    const updateItem = (field : string, value: any) => {
+    const updateItem = (field : string, value: any, id? : string) => {
         // setItem({ ...item, [field]: value })
-        db.updateItem(data.id, { ...data, [field]: value})
+        db.updateItem(id ? id : data.id, { ...data, [field]: value})
+            .then(data => props.setWishlistItems(data))
+    }
+
+    const openImageMenu = (target: EventTarget|null) => {
+        setMenuTarget(target)
     }
 
     const deleteItem = () => {
-        db.deleteItem(data.id)
+        db.deleteItem(data.id).then(data => props.setWishlistItems(data))
     }
 
     return (
@@ -49,21 +43,21 @@ function WishlistItem(props: { data: Item }) {
                     onChange={(e) => updateItem("text", e.target.value)}
                 />
                 <div className="cursor-pointer hover:text-gray-400"
-                    title={data.hasImage ? "" : "add image"}
-                    onClick={() => updateItem("hasImage", !data.hasImage)}
+                    title={data.imageSource ? "" : "add image"}
+                    onClick={(e) => openImageMenu(e.target)}
                 >
                     {
-                        data.hasImage
+                        data.imageSource
                             ? <PhotoOutlinedIcon />
                             : <AddPhotoAlternateOutlinedIcon />
                     }
                 </div>
                 <div className="cursor-pointer hover:text-gray-400"
-                    title={(data.hasLink ? "link" : "add link")}
-                    onClick={() => updateItem("hasLink", !data.hasLink)}
+                    title={(data.imageSource ? "link" : "add link")}
+                    onClick={(e) => openImageMenu(e.target)}
                 >
                     {
-                        data.hasLink
+                        data.linkText
                         ?
                         // <a title='go somewhere' href={item.linkText} target="_blank" rel="noreferrer">
                             <LinkOutlinedIcon />
@@ -88,6 +82,9 @@ function WishlistItem(props: { data: Item }) {
                 </div>
                 
             </div>
+            <LinkMenu target={menuTarget} source={data.imageSource} itemId={data.id} clearTarget={() => setMenuTarget(null)}
+                updateItem={updateItem} setWishlistItems={props.setWishlistItems}
+            />
         </>
     );
 }

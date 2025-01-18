@@ -12,11 +12,11 @@ function Wishlist() {
     let [wishlistItems, setWishlistItems] = useState(emptyList)
 
     useEffect(() => {
-        setWishlistItems(db.getItems())
+        db.getItems().then(data => setWishlistItems(data))
     }, [])
 
     const createNewItem = () => {
-        db.createItem()
+        db.createItem().then(data => setWishlistItems(data))
     }
 
     return (
@@ -31,15 +31,17 @@ function Wishlist() {
                 </div>
 
                 <div className="flex flex-col space-y-1">
-                    { wishlistItems.map((data, i) => <WishlistItem key={i} data={data} />) }
+                    { wishlistItems.map((data, i) => <WishlistItem key={i} data={data} setWishlistItems={setWishlistItems} />) }
                 </div>
 
-                <button type="button"
-                    className=""
-                    onClick={() => createNewItem()}
-                >
-                    + Create New
-                </button>
+                <div className="flex justify-center" >
+                    <button type="button"
+                        className="bg-white flex justify-between items-center space-x-2 mx-2 border border-gray-300 rounded px-2 py-1"
+                        onClick={() => createNewItem()}
+                    >
+                        + Add New Item
+                    </button>
+                </div>
 
             </div>
         </div>

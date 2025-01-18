@@ -2,9 +2,7 @@ export type Item = {
     id: string,
     text: string,
     imageSource: string,
-    hasImage: boolean,
     linkText: string,
-    hasLink: boolean,
     show: boolean,
     isClaimed: boolean,
     claimedBy: string
@@ -16,9 +14,7 @@ export default class StorageHandler {
         id: "",
         text: "",
         imageSource: "",
-        hasImage: false,
         linkText: "",
-        hasLink: false,
         show: true,
         isClaimed: false,
         claimedBy: ""
@@ -30,52 +26,60 @@ export default class StorageHandler {
 
     initializeWishlist() {
         if (this.localStorage.wishlistString) return
-
         this.saveItems([])
     }
 
 
-    createItem() {
-        let wishlist = this.getItems()
+    createItem(): Promise<Item[]> {
+        let wishlist = this.#getWishlist()
         let newItem = { ...this.#emptyItem, id: ""+Date.now() }
         wishlist.push(newItem)
-        this.saveItems(wishlist)
+        return this.saveItems(wishlist)
     }
 
     updateItem(id: string, value: Item) {
-        let wishlist = this.getItems()
+        let wishlist = this.#getWishlist()
         let index = wishlist.findIndex((i:Item) => i.id === id)
         wishlist[index] = { ...wishlist[index], ...value }
-        this.saveItems(wishlist)
+        return this.saveItems(wishlist)
     }
 
     deleteItem(id: string) {
-        let wishlist = this.getItems()
+        let wishlist = this.#getWishlist()
         let index = wishlist.findIndex((i: Item) => i.id === id)
         if (index != -1) {
             wishlist.splice(index, 1)
         }
-        this.saveItems(wishlist)
+        return this.saveItems(wishlist)
     }
 
-    saveItems(wishlist: Item[]) {
+    saveItems(wishlist: Item[]) : Promise<Item[]> {
         this.localStorage.wishlistString = JSON.stringify(wishlist)
+        return new Promise((resolve) => {
+            resolve(wishlist)
+        })
     }
 
-    getItems(): Item[] {
+    #getWishlist(): Item[] {
         return JSON.parse(this.localStorage.wishlistString)
     }
 
-    getItem(id: string) {
-        let wishlist: Item[] = this.getItems()
-        return wishlist.find((i: Item) => i.id === id)
+    getItems(): Promise<Item[]> {
+        return new Promise((resolve) => {
+            let items:Item[] = this.#getWishlist()
+            resolve(items)
+        })
     }
 
-    get(key: string) {
-        return this.localStorage.getValue(key)
-    }
-
-    set(key: string, value: string) {
-        this.localStorage.setValue(key, value)
+    getItem(id: string): Promise<Item|undefined> {
+        let wishlist: Item[] = this.#getWishlist()
+        return new Promise((resolve, reject) => {
+            let item = wishlist.find((i: Item) => i.id === id)
+            if (item){
+                resolve(item)
+            } else {
+                reject(undefined)
+            }
+        })
     }
 }
