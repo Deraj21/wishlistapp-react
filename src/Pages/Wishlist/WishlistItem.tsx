@@ -33,7 +33,7 @@ function WishlistItem(props: { data: Item, setWishlistItems: Function }) {
     }
 
     return (
-        <>
+        <div>
             <div className="bg-white flex justify-between items-center space-x-2 mx-2 border border-gray-300 rounded px-2 py-1" >
                 <input
                     className="text-lg py-1 px-2 focus:outline-none focus:ring-1 focus:ring-gray-400 rounded"
@@ -82,10 +82,12 @@ function WishlistItem(props: { data: Item, setWishlistItems: Function }) {
                 </div>
                 
             </div>
-            <LinkMenu target={menuTarget} source={data.imageSource} itemId={data.id} clearTarget={() => setMenuTarget(null)}
-                updateItem={updateItem} setWishlistItems={props.setWishlistItems}
-            />
-        </>
+            <div>
+                <LinkMenu target={menuTarget} source={data.imageSource} itemId={data.id} clearTarget={() => setMenuTarget(null)}
+                    updateItem={updateItem} setWishlistItems={props.setWishlistItems}
+                />
+            </div>
+        </div>
     );
 }
 
