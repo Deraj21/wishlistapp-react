@@ -42,15 +42,17 @@ function WishlistItem(props: { data: Item, setWishlistItems: Function }) {
                     value={data.text}
                     onChange={(e) => updateItem("text", e.target.value)}
                 />
-                <div className="cursor-pointer hover:text-gray-400 flex flex-col items-center"
-                    title={data.imageSource ? "" : "add image"}
-                    onClick={(e) => openImageMenu(e.target)}
-                >
-                    {
-                        data.imageSource
-                            ? <PhotoOutlinedIcon />
-                            : <AddPhotoAlternateOutlinedIcon />
-                    }
+                <div className="flex flex-col items-center space-y-8">
+                    <div className="cursor-pointer hover:text-gray-400"
+                        title={data.imageSource ? "" : "add image"}
+                        onClick={(e) => openImageMenu(e.target)}
+                    >
+                        {
+                            data.imageSource
+                                ? <PhotoOutlinedIcon />
+                                : <AddPhotoAlternateOutlinedIcon />
+                        }
+                    </div>
                     <LinkMenu target={menuTarget} source={data.imageSource} itemId={data.id} clearTarget={() => setMenuTarget(null)}
                         updateItem={updateItem} setWishlistItems={props.setWishlistItems}
                     />
