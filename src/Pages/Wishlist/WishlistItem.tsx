@@ -24,8 +24,10 @@ function WishlistItem(props: { data: Item, setWishlistItems: Function }) {
             .then(data => props.setWishlistItems(data))
     }
 
-    const openImageMenu = (target: EventTarget|null) => {
-        setMenuTarget(target)
+    // const openImageMenu = (target: EventTarget|null) => {
+    const openImageMenu = (e: MouseEvent) => {
+        console.log(e)
+        setMenuTarget(e.target)
     }
 
     const deleteItem = () => {
@@ -42,19 +44,22 @@ function WishlistItem(props: { data: Item, setWishlistItems: Function }) {
                     value={data.text}
                     onChange={(e) => updateItem("text", e.target.value)}
                 />
-                <div className="cursor-pointer hover:text-gray-400"
+                <div className="cursor-pointer hover:text-gray-400 flex flex-col items-start justify-center"
                     title={data.imageSource ? "" : "add image"}
-                    onClick={(e) => openImageMenu(e.target)}
+                    onClick={(e) => openImageMenu(e as unknown as MouseEvent)}
                 >
                     {
                         data.imageSource
                             ? <PhotoOutlinedIcon />
                             : <AddPhotoAlternateOutlinedIcon />
                     }
+                    <LinkMenu target={menuTarget} source={data.imageSource} itemId={data.id} clearTarget={() => setMenuTarget(null)}
+                        updateItem={updateItem} setWishlistItems={props.setWishlistItems}
+                    />
                 </div>
                 <div className="cursor-pointer hover:text-gray-400"
                     title={(data.imageSource ? "link" : "add link")}
-                    onClick={(e) => openImageMenu(e.target)}
+                    onClick={(e) => openImageMenu(e as unknown as MouseEvent)}
                 >
                     {
                         data.linkText
@@ -81,11 +86,6 @@ function WishlistItem(props: { data: Item, setWishlistItems: Function }) {
                     <DeleteOutlinedIcon />
                 </div>
                 
-            </div>
-            <div>
-                <LinkMenu target={menuTarget} source={data.imageSource} itemId={data.id} clearTarget={() => setMenuTarget(null)}
-                    updateItem={updateItem} setWishlistItems={props.setWishlistItems}
-                />
             </div>
         </div>
     );
