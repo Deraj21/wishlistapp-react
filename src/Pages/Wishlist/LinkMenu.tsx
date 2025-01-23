@@ -23,12 +23,11 @@ function LinkMenu(props: LinkMenuProps) {
 
     return (
         
-        <div
-            // className="relative right-[50%]"
-        >
+        // <div
+        //     // className="relative right-[50%]"
+        // >
             <div className={`bg-white p-4 border border-gray-300 rounded-md flex flex-col space-y-4 mx-2 shadow-md ` + 
                 (props.target ? "absolute" : "hidden") + 
-                "" +
                 ` before:content-[""] before:border-[5px] before:border-r-transparent before:border-l-transparent before:border-t-transparent before:border-b-black before:absolute before:bottom-[100%] before:left-1/2`}
             >
                 <div className="cursor-pointer absolute top-0 right-0 p-2 hover:text-red-500"
@@ -59,7 +58,7 @@ function LinkMenu(props: LinkMenuProps) {
                 </div>
                 <img width="300" src={props.source ? props.source : PLACEHOLDER_IMAGE_TEXT} alt="list item image" />
             </div>
-        </div>
+        // </div>
     )
 }
 

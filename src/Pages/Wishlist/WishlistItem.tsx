@@ -24,10 +24,8 @@ function WishlistItem(props: { data: Item, setWishlistItems: Function }) {
             .then(data => props.setWishlistItems(data))
     }
 
-    // const openImageMenu = (target: EventTarget|null) => {
-    const openImageMenu = (e: MouseEvent) => {
-        console.log(e)
-        setMenuTarget(e.target)
+    const openImageMenu = (target: EventTarget|null) => {
+        setMenuTarget(target)
     }
 
     const deleteItem = () => {
@@ -44,9 +42,9 @@ function WishlistItem(props: { data: Item, setWishlistItems: Function }) {
                     value={data.text}
                     onChange={(e) => updateItem("text", e.target.value)}
                 />
-                <div className="cursor-pointer hover:text-gray-400 flex flex-col items-start justify-center"
+                <div className="cursor-pointer hover:text-gray-400 flex flex-col items-center"
                     title={data.imageSource ? "" : "add image"}
-                    onClick={(e) => openImageMenu(e as unknown as MouseEvent)}
+                    onClick={(e) => openImageMenu(e.target)}
                 >
                     {
                         data.imageSource
@@ -59,7 +57,7 @@ function WishlistItem(props: { data: Item, setWishlistItems: Function }) {
                 </div>
                 <div className="cursor-pointer hover:text-gray-400"
                     title={(data.imageSource ? "link" : "add link")}
-                    onClick={(e) => openImageMenu(e as unknown as MouseEvent)}
+                    onClick={(e) => openImageMenu(e.target)}
                 >
                     {
                         data.linkText
