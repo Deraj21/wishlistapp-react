@@ -1,6 +1,7 @@
 
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import CloseIcon from '@mui/icons-material/Close';
+import Input from "../../components/Input";
 
 // import { Item } from '../../data/StorageHandler';
 
@@ -13,6 +14,7 @@ type LinkMenuProps = {
     updateItem: Function,
     setWishlistItems: Function,
     clearTarget: Function
+    type: "image" | "link"
 }
 
 function LinkMenu(props: LinkMenuProps) {
@@ -22,9 +24,7 @@ function LinkMenu(props: LinkMenuProps) {
         // <div
         //     // className="relative right-[50%]"
         // >
-            <div className={`bg-white p-4 border border-gray-300 rounded-md flex flex-col space-y-4 mx-2 shadow-md ` + 
-                (props.target ? "absolute" : "hidden") + " mr-[17px]" + 
-                ` before:content-[""] before:border-[5px] before:border-r-transparent before:border-l-transparent before:border-t-transparent before:border-b-black before:absolute before:bottom-[100%] before:left-1/2`}
+            <div className={`bg-white p-4 border border-gray-300 rounded-md flex flex-col space-y-4 mx-2 shadow-md before:content-[""] before:border-[5px] before:border-r-transparent before:border-l-transparent before:border-t-transparent before:border-b-black before:absolute before:bottom-[100%] before:left-1/2` + (props.target ? " absolute" : " hidden")}
             >
                 <div className="cursor-pointer absolute top-0 right-0 p-2 hover:text-red-500"
                     onClick={() => props.clearTarget()}
@@ -33,11 +33,12 @@ function LinkMenu(props: LinkMenuProps) {
                     <CloseIcon />
                 </div>
                 <div className="flex justify-start items-center space-x-2">
-                    <input type="text" placeholder="[ paste image link ]"
+                    <Input type="text" placeholder="[ paste image link ]"
                         className="border border-gray-300 rounded-md px-2 py-1 focus:ring-1 focus:ring-green-900 focus:outline-none"
                         value={props.source}
                         onChange={function(e) {
-                            props.updateItem("imageSource", e.target.value, props.itemId)
+                            let key = props.type === "image" ? "imageSource" : "linkText"
+                            props.updateItem(key, e.target.value, props.itemId)
                         }}
                     />
                     {
@@ -45,14 +46,19 @@ function LinkMenu(props: LinkMenuProps) {
                         ? <a target="_blank" rel="noreferrer noopener"
                             className="cursor-pointer hover:text-blue-500"
                             href={props.source}
+                            title="Open in new tab"
                         >
-                            {``}<OpenInNewIcon />
+                            <OpenInNewIcon />
                         </a>
                         :
                         ''
                     }
                 </div>
-                <img width="300" src={props.source ? props.source : PLACEHOLDER_IMAGE_TEXT} alt="list item image" />
+                {
+                    props.type === "image"
+                    ? <img width="300" src={props.source ? props.source : PLACEHOLDER_IMAGE_TEXT} alt="list item image" />
+                    : ''
+                }
             </div>
         // </div>
     )

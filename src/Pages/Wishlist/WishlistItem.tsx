@@ -16,7 +16,8 @@ function WishlistItem(props: { data: Item, setWishlistItems: Function }) {
     let { data } = props
     let db = new StorageHandler()
 
-    const [menuTarget, setMenuTarget] = useState<EventTarget|null>(null)
+    const [imageMenuTarget, setImageMenuTarget] = useState<EventTarget|null>(null)
+    const [linkMenuTarget, setLinkMenuTarget] = useState<EventTarget|null>(null)
 
     const updateItem = (field : string, value: any, id? : string) => {
         // setItem({ ...item, [field]: value })
@@ -25,10 +26,15 @@ function WishlistItem(props: { data: Item, setWishlistItems: Function }) {
     }
 
     const openImageMenu = (target: EventTarget|null) => {
-        setMenuTarget(target)
+        setImageMenuTarget(target)
+    }
+
+    const openLinkMenu = (target: EventTarget|null) => {
+        setLinkMenuTarget(target)
     }
 
     const deleteItem = () => {
+        window.confirm("Are you sure you want to delete this item?") &&
         db.deleteItem(data.id).then(data => props.setWishlistItems(data))
     }
 
@@ -53,22 +59,26 @@ function WishlistItem(props: { data: Item, setWishlistItems: Function }) {
                                 : <AddPhotoAlternateOutlinedIcon />
                         }
                     </div>
-                    <LinkMenu target={menuTarget} source={data.imageSource} itemId={data.id} clearTarget={() => setMenuTarget(null)}
+                    <LinkMenu target={imageMenuTarget} source={data.imageSource} itemId={data.id}
+                        clearTarget={() => setImageMenuTarget(null)} type="image"
                         updateItem={updateItem} setWishlistItems={props.setWishlistItems}
                     />
                 </div>
-                <div className="cursor-pointer hover:text-gray-400"
-                    title={(data.imageSource ? "link" : "add link")}
-                    onClick={(e) => openImageMenu(e.target)}
-                >
-                    {
-                        data.linkText
-                        ?
-                        // <a title='go somewhere' href={item.linkText} target="_blank" rel="noreferrer">
-                            <LinkOutlinedIcon />
-                        // </a>
-                        : <AddLinkOutlinedIcon />
-                    }
+                <div className="flex flex-col items-center space-y-8">
+                    <div className="cursor-pointer hover:text-gray-400"
+                        title={(data.imageSource ? "link" : "add link")}
+                        onClick={(e) => openLinkMenu(e.target)}
+                    >
+                        {
+                            data.linkText
+                                ? <LinkOutlinedIcon />
+                                : <AddLinkOutlinedIcon />
+                        }
+                    </div>
+                    <LinkMenu target={linkMenuTarget} source={data.linkText} itemId={data.id}
+                        clearTarget={() => setLinkMenuTarget(null)} type="link"
+                        updateItem={updateItem} setWishlistItems={props.setWishlistItems}
+                    />
                 </div>
                 <div className="cursor-pointer hover:text-gray-400"
                     title={(data.show ? "showing" : "hidden")}

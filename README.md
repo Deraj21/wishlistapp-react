@@ -5,9 +5,7 @@
 - [tailwindcss](https://tailwindcss.com/docs/utility-first)
 - [mui icons](https://mui.com/material-ui/material-icons/)
 - [placeholder images](https://placehold.co)
-
-
-
+- yoinked react input code from [stackoverflow](https://stackoverflow.com/questions/46000544/react-controlled-input-cursor-jumps)
 
 ### Inspiration
 - wishlist item
