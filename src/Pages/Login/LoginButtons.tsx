@@ -1,9 +1,6 @@
 import { useNavigate } from "react-router";
-import { useState } from "react";
 
-// import reactLogo from "/react.svg";
 import candyPNG from "/candy-lg.png"
-import LinkMenu from "../Wishlist/LinkMenu";
 
 
 function LoginButtons() {
@@ -14,8 +11,8 @@ function LoginButtons() {
         nav("/mylist")
     }
 
-    const [username, setUsername] = useState("")
-    const [password, setPassword] = useState("")
+    // const [username, setUsername] = useState("")
+    // const [password, setPassword] = useState("")
 
     return (<>
         <div className="flex flex-col items-center space-y-4">
