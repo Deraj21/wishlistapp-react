@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import WishlistItem from "./WishlistItem";
 import { Link } from "react-router";
 import StorageHandler, { Item } from "../../data/StorageHandler";
+import ListItemsHandler from "../../data/ListItemsHandler";
 
 let emptyList : Item[] = []
 
@@ -12,7 +13,9 @@ function Wishlist() {
     let [wishlistItems, setWishlistItems] = useState(emptyList)
 
     useEffect(() => {
-        db.getItems().then(data => setWishlistItems(data))
+        // db.getItems().then(data => setWishlistItems(data))
+
+        ListItemsHandler.getItems().then(data => setWishlistItems(data))
     }, [])
 
     const createNewItem = () => {

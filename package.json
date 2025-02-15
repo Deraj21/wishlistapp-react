@@ -4,6 +4,7 @@
     "version": "0.0.0",
     "type": "module",
     "main": "server/index.ts",
+    "proxy": "http://localhost:3000",
     "scripts": {
         "dev": "vite",
         "server": "tsx server/index.ts",
