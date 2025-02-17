@@ -9,8 +9,8 @@ const PLACEHOLDER_IMAGE_TEXT = "https://placehold.co/300x200?text=your+image+her
 
 type LinkMenuProps = {
     target: EventTarget | null,
-    source: string,
-    itemId: string,
+    source: string | undefined,
+    itemId: string | undefined,
     updateItem: Function,
     setWishlistItems: Function,
     clearTarget: Function

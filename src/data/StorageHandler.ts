@@ -1,11 +1,11 @@
 export type Item = {
-    id: string,
-    text: string,
-    imageSource: string,
-    linkText: string,
-    show: boolean,
-    isClaimed: boolean,
-    claimedBy: string
+    id?: string,
+    text?: string,
+    imageSource?: string,
+    linkText?: string,
+    show?: boolean,
+    isClaimed?: boolean,
+    claimedBy?: string
 }
 
 export default class StorageHandler {
@@ -44,7 +44,7 @@ export default class StorageHandler {
         return this.saveItems(wishlist)
     }
 
-    deleteItem(id: string) {
+    deleteItem(id: string | undefined) {
         let wishlist = this.#getWishlist()
         let index = wishlist.findIndex((i: Item) => i.id === id)
         if (index != -1) {

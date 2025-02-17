@@ -8,21 +8,28 @@ import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 
-import StorageHandler, { Item } from '../../data/StorageHandler';
+// import StorageHandler from '../../data/StorageHandler';
+import api, { Item } from "../../data/Api";
 import LinkMenu from './LinkMenu';
 
 function WishlistItem(props: { data: Item, setWishlistItems: Function }) {
 
     let { data } = props
-    let db = new StorageHandler()
+    // let db = new StorageHandler()
 
     const [imageMenuTarget, setImageMenuTarget] = useState<EventTarget|null>(null)
     const [linkMenuTarget, setLinkMenuTarget] = useState<EventTarget|null>(null)
 
     const updateItem = (field : string, value: any, id? : string) => {
         // setItem({ ...item, [field]: value })
-        db.updateItem(id ? id : data.id, { ...data, [field]: value})
-            .then(data => props.setWishlistItems(data))
+        if (data.id === undefined) {
+            return
+        }
+        api.updateItem(id ? id : data.id, { ...data, [field]: value}).then(() => {
+            api.getItems().then(data => props.setWishlistItems(data))
+        })
+        // db.updateItem(id ? id : data.id, { ...data, [field]: value})
+        //     .then(data => props.setWishlistItems(data))
     }
 
     const openImageMenu = (target: EventTarget|null) => {
@@ -35,7 +42,9 @@ function WishlistItem(props: { data: Item, setWishlistItems: Function }) {
 
     const deleteItem = () => {
         window.confirm("Are you sure you want to delete this item?") &&
-        db.deleteItem(data.id).then(data => props.setWishlistItems(data))
+        api.deleteItem(data.id ? data.id : "").then(() => {
+            api.getItems().then(data => props.setWishlistItems(data))
+        })
     }
 
     return (

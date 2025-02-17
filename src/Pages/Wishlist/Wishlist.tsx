@@ -1,25 +1,22 @@
 import { useEffect, useState } from "react";
 import WishlistItem from "./WishlistItem";
 import { Link } from "react-router";
-import StorageHandler, { Item } from "../../data/StorageHandler";
-import ListItemsHandler from "../../data/ListItemsHandler";
+import api, { Item } from "../../data/Api";
 
 let emptyList : Item[] = []
 
 function Wishlist() {
-
-    let db = new StorageHandler()
     // const wishlistItems = db.getItems()
     let [wishlistItems, setWishlistItems] = useState(emptyList)
 
     useEffect(() => {
-        // db.getItems().then(data => setWishlistItems(data))
-
-        ListItemsHandler.getItems().then(data => setWishlistItems(data))
+        api.getItems().then(data => setWishlistItems(data))
     }, [])
 
     const createNewItem = () => {
-        db.createItem().then(data => setWishlistItems(data))
+        api.createItem({}).then(() => {
+            api.getItems().then(data => setWishlistItems(data))
+        })
     }
 
     return (
