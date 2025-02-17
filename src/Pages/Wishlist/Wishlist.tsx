@@ -6,8 +6,8 @@ import api, { Item } from "../../data/Api";
 let emptyList : Item[] = []
 
 function Wishlist() {
-    // const wishlistItems = db.getItems()
     let [wishlistItems, setWishlistItems] = useState(emptyList)
+    // const [search, setSearch] = useState("")
 
     useEffect(() => {
         api.getItems().then(data => setWishlistItems(data))
@@ -30,8 +30,18 @@ function Wishlist() {
                     </Link>
                 </div>
 
+                <input
+                    type="text"
+                    placeholder="Search"
+                    className="border border-gray-300 rounded-md px-2 py-1 focus:ring-1 focus:ring-green-900 focus:outline-none"
+                    onChange={function(e) {
+                        let search = e.target.value
+                        api.getItems(search).then(data => setWishlistItems(data))
+                    }}
+                ></input>
+
                 <div className="flex flex-col space-y-1">
-                    { wishlistItems.map((data, i) => <WishlistItem key={i} data={data} setWishlistItems={setWishlistItems} />) }
+                    { wishlistItems.map((data, i) => <WishlistItem key={i} itemData={data} setWishlistItems={setWishlistItems} />) }
                 </div>
 
                 <div className="flex justify-center" >

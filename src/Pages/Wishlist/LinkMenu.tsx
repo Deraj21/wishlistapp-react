@@ -12,6 +12,7 @@ type LinkMenuProps = {
     source: string | undefined,
     itemId: string | undefined,
     updateItem: Function,
+    unfocus: Function,
     setWishlistItems: Function,
     clearTarget: Function
     type: "image" | "link"
@@ -40,6 +41,7 @@ function LinkMenu(props: LinkMenuProps) {
                             let key = props.type === "image" ? "imageSource" : "linkText"
                             props.updateItem(key, e.target.value, props.itemId)
                         }}
+                        onBlur={() => props.unfocus()}
                     />
                     {
                         props.source

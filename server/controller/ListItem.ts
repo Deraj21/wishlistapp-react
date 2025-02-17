@@ -32,7 +32,7 @@ const itemHandler = {
     // /items
     getItems: function(req: express.Request, res: express.Response) {
         // search parameter
-        let search = req.query.search as string
+        const search = req.query.search as string
         if (search) {
             res.json(initialData.filter( i => i.text.toLowerCase().includes(search.toLowerCase()) ))
             return

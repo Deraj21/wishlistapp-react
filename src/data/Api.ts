@@ -15,9 +15,9 @@ export type Item = {
 }
 
 export default {
-    getItems: async function() {
+    getItems: async function(search?: string) {
         try {
-            const response = await fetch(`${BASE_URL}${targets.items}`)
+            const response = await fetch(`${BASE_URL}${targets.items}?search=${search ? search : ""}`)
             if (!response.ok) {
                 throw new Error('Failed to fetch items')
             }

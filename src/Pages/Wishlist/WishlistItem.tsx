@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import PhotoOutlinedIcon from '@mui/icons-material/PhotoOutlined';
 import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
@@ -12,24 +12,39 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import api, { Item } from "../../data/Api";
 import LinkMenu from './LinkMenu';
 
-function WishlistItem(props: { data: Item, setWishlistItems: Function }) {
+function WishlistItem(props: { itemData: Item, setWishlistItems: Function }) {
 
-    let { data } = props
-    // let db = new StorageHandler()
+    let { itemData } = props
 
     const [imageMenuTarget, setImageMenuTarget] = useState<EventTarget|null>(null)
     const [linkMenuTarget, setLinkMenuTarget] = useState<EventTarget|null>(null)
+    const [item, setItem] = useState<Item>(itemData)
 
-    const updateItem = (field : string, value: any, id? : string) => {
-        // setItem({ ...item, [field]: value })
-        if (data.id === undefined) {
+    useEffect(() => {
+        setItem(itemData)
+    }, [itemData])
+
+    const updateItem = (field : string, value: any) => {
+        if (item.id === undefined) {
             return
         }
-        api.updateItem(id ? id : data.id, { ...data, [field]: value}).then(() => {
+        if ([ "text", "imageSource", "linkText" ].find(f => f === field)) {
+            setItem({ ...item, [field]: value })
+            return
+        }
+
+        api.updateItem(item.id, { ...item, [field]: value }).then(() => {
+            api.getItems().then(newListData => props.setWishlistItems(newListData))
+        })
+    }
+
+    const unfocus = () => {
+        if (item.id === undefined) {
+            return
+        }
+        api.updateItem(item.id, item).then(() => {
             api.getItems().then(data => props.setWishlistItems(data))
         })
-        // db.updateItem(id ? id : data.id, { ...data, [field]: value})
-        //     .then(data => props.setWishlistItems(data))
     }
 
     const openImageMenu = (target: EventTarget|null) => {
@@ -42,7 +57,7 @@ function WishlistItem(props: { data: Item, setWishlistItems: Function }) {
 
     const deleteItem = () => {
         window.confirm("Are you sure you want to delete this item?") &&
-        api.deleteItem(data.id ? data.id : "").then(() => {
+        api.deleteItem(item.id ? item.id : "").then(() => {
             api.getItems().then(data => props.setWishlistItems(data))
         })
     }
@@ -54,47 +69,50 @@ function WishlistItem(props: { data: Item, setWishlistItems: Function }) {
                     className="text-lg py-1 px-2 focus:outline-none focus:ring-1 focus:ring-gray-400 rounded"
                     type="text"
                     placeholder="I want..."
-                    value={data.text}
+                    value={item.text}
                     onChange={(e) => updateItem("text", e.target.value)}
+                    onBlur={() => unfocus()}
                 />
                 <div className="flex flex-col items-center space-y-8">
                     <div className="cursor-pointer hover:text-gray-400"
-                        title={data.imageSource ? "" : "add image"}
+                        title={item.imageSource ? "" : "add image"}
                         onClick={(e) => openImageMenu(e.target)}
                     >
                         {
-                            data.imageSource
+                            item.imageSource
                                 ? <PhotoOutlinedIcon />
                                 : <AddPhotoAlternateOutlinedIcon />
                         }
                     </div>
-                    <LinkMenu target={imageMenuTarget} source={data.imageSource} itemId={data.id}
+                    <LinkMenu target={imageMenuTarget} source={item.imageSource} itemId={item.id}
                         clearTarget={() => setImageMenuTarget(null)} type="image"
                         updateItem={updateItem} setWishlistItems={props.setWishlistItems}
+                        unfocus={unfocus}
                     />
                 </div>
                 <div className="flex flex-col items-center space-y-8">
                     <div className="cursor-pointer hover:text-gray-400"
-                        title={(data.imageSource ? "link" : "add link")}
+                        title={(item.imageSource ? "link" : "add link")}
                         onClick={(e) => openLinkMenu(e.target)}
                     >
                         {
-                            data.linkText
+                            item.linkText
                                 ? <LinkOutlinedIcon />
                                 : <AddLinkOutlinedIcon />
                         }
                     </div>
-                    <LinkMenu target={linkMenuTarget} source={data.linkText} itemId={data.id}
+                    <LinkMenu target={linkMenuTarget} source={item.linkText} itemId={item.id}
                         clearTarget={() => setLinkMenuTarget(null)} type="link"
                         updateItem={updateItem} setWishlistItems={props.setWishlistItems}
+                        unfocus={unfocus}
                     />
                 </div>
                 <div className="cursor-pointer hover:text-gray-400"
-                    title={(data.show ? "showing" : "hidden")}
-                    onClick={() => updateItem("show", !data.show)}
+                    title={(item.show ? "showing" : "hidden")}
+                    onClick={() => updateItem("show", !item.show)}
                 >
                     {
-                        data.show
+                        item.show
                         ? <VisibilityOutlinedIcon />
                         : <VisibilityOffOutlinedIcon />
                     }
